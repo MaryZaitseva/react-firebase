@@ -36,15 +36,15 @@ class CreateTable extends Component {
         amount: '',
         vat: '',
         amountWithVat: '',
-        sellingDate: null
+        sellingDate: ''
     };
 
-    componentDidMount() {
-        var starCountRef = firebase.database().ref('/users/' + this.state.userId + '/cars');
+    componentWillMount() {
+        /*var starCountRef = firebase.database().ref('/users/' + this.state.userId + '/cars');
         starCountRef.on('value', snapshot => {
           let dataObject = snapshot.val();
           this.setState({ ...dataObject })
-        });
+        });*/
     }
 
     getHeaderRows = () => (
@@ -103,15 +103,16 @@ class CreateTable extends Component {
     saveData = () => {
         let newData = this.state;
         let { userId, ...rest } = newData;
-        firebase.database().ref('users/' + userId).set({
-            cars: rest
+        let newCar = firebase.database().ref('users/' + userId + '/cars').push();
+        newCar.set({
+            ...rest
         }, err => {
             if(err){
                 console.log(err)
             } else{
-                browserHistory.push({})
+                browserHistory.push('/')
             }
-        });
+        })
     }
 
     render() {

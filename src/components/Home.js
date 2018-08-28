@@ -7,7 +7,7 @@ const Home = (props) => (
         <Grid.Row>
             <Grid.Column floated="left">
                 <Link to="/create">
-                    <Button floated="left" color="grey" style={{ marginTop: '40px' }}>
+                    <Button floated="left" color="grey" style={{ marginTop: '40px', width: '20%' }}>
                         Create new car
                     </Button>
                 </Link>
@@ -16,7 +16,7 @@ const Home = (props) => (
         <Grid.Row>
             <Grid.Column floated="left">
                 <Link to="/data">
-                    <Button floated="left" color="grey" style={{ marginTop: '40px' }}>
+                    <Button floated="left" color="grey" style={{ marginTop: '40px', width: '20%'  }}>
                         Dataset
                     </Button>
                 </Link>
@@ -25,7 +25,7 @@ const Home = (props) => (
         <Grid.Row>
             <Grid.Column floated="left">
                 <Link to="/setup">
-                    <Button floated="left" color="grey" style={{ marginTop: '40px' }}>
+                    <Button floated="left" color="grey" style={{ marginTop: '40px', width: '20%'  }}>
                         Setup
                     </Button>
                 </Link>

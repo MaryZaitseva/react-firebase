@@ -19,12 +19,10 @@ starCountRef.on('value', function(snapshot) {
 });
         return (
             <Grid container centered columns={2}>
-                <Grid.Column textAlign="left">
-                    <Segment color="blue" style={{ marginTop: '40px' }} raised>
-                        <Form onSubmit={ () => { browserHistory.push('/') }}>
-                            
+                <Grid.Column>
+                        <Form onSubmit={ () => { browserHistory.push('/') }} style={{ marginTop:'50px' }}>
                             <Form.Field>
-                                <label>Login</label>
+                                <label style={{ display:'inline-block', textAlign: 'right' }}>Login</label>
                                 <input type="text"
                                        placeholder="Type your login"
                                        name="login"
@@ -32,7 +30,7 @@ starCountRef.on('value', function(snapshot) {
                                        onChange={(e) => { this.setState({ login: e.target.value }) } } />
                             </Form.Field>
                             <Form.Field>
-                                <label>Password</label>
+                                <label style={{ display:'inline-block', textAlign: 'right' }}>Password</label>
                                 <input type="password"
                                        placeholder="Type your password"
                                        name="password"
@@ -40,11 +38,10 @@ starCountRef.on('value', function(snapshot) {
                                        onChange={ (e) => { this.setState({ password: e.target.value }) } }/>
                             </Form.Field>
                             
-                            <Form.Field style={{ textAlign: 'right' }}>
-                                <Button type='submit' color="blue">Submit</Button>
+                            <Form.Field>
+                                <Button type='submit' color="grey">Submit</Button>
                             </Form.Field>
                         </Form>
-                    </Segment>
                 </Grid.Column>
             </Grid>
         );
