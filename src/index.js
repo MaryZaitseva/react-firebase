@@ -15,13 +15,15 @@ import Setup from './components/Setup';
 
 ReactDOM.render(
   <Router history={ browserHistory }>
-      <Route exact path="/" component={ Home }/>
+  <Route path="/" component={ App }>
+      <IndexRoute component={ Home }/>
       <Route path="/login" component={ Auth }/>
       <Route path="/create" component={ CreateMenu }/>
       <Route path="/create/manually" component={ CreateTable }/>
       <Route path="/create/upload" component={ UploadPage }/>
       <Route path="/data" component={ DataTable }/>
       <Route path="/setup" component={ Setup }/>
+      </Route>
   </Router>,
   document.getElementById('root')
 );
