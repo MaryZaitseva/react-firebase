@@ -1,5 +1,6 @@
 import React, { Component }  from 'react';
 import moment from 'moment';
+import { browserHistory } from 'react-router';
 import _ from 'lodash';
 import { Table, Grid, Button, Icon, Dropdown, Menu, Input } from 'semantic-ui-react';
 import { Link } from 'react-router';
@@ -7,6 +8,7 @@ import firebase from '../firebase';
 
 class CreateTable extends Component {
     state = {
+        userId: 0,
         id: '',
         invoice: '',
         d1: '',
@@ -37,46 +39,10 @@ class CreateTable extends Component {
         sellingDate: null
     };
 
-    dropdownOptions = [
-        {
-            text: '5',
-            value: 5
-        },
-        {
-            text: '10',
-            value: 10
-        },
-        {
-            text: '15',
-            value: 15
-        },
-        {
-            text: '20',
-            value: 20
-        },
-        {
-            text: '25',
-            value: 25
-        },
-        {
-            text: '30',
-            value: 30
-        },
-        {
-            text: '40',
-            value: 40
-        },
-        {
-            text: '50',
-            value: 50
-        }
-    ];
-
-
     componentDidMount() {
-        var starCountRef = firebase.database().ref('/');
+        var starCountRef = firebase.database().ref('/users/' + this.state.userId + '/cars');
         starCountRef.on('value', snapshot => {
-          let dataObject = snapshot.val().cars;
+          let dataObject = snapshot.val();
           this.setState({ ...dataObject })
         });
     }
@@ -115,21 +81,38 @@ class CreateTable extends Component {
     );
 
     getTableData = projects => {
-        return Object.keys(this.state).map((objectKey, index) => {
-                    console.log(objectKey)
-                    let value = this.state[objectKey];
-                    return (
-                        <Table.Cell key={ index }>
-                            <Input
-                                style={{ width: '90px'}}
-                                onChange={ e => { this.setState({ [objectKey]: e.target.value }) }}
-                                value = { value }
-                            />
-                        </Table.Cell>
-                    )
-                })
-            
+        let columns = [ 'id', 'invoice', 'd1', 'd3', '5', 'B', 'E', '21', '22', 
+            'kilometer', 'HU', 'number', 'p2', 'p21', 'p1', 'p3', 'euro', 'gear', 'owner', 
+            'name', 'street', 'postCode', 'city', 'country', 'amount', 
+            'vat', 'amountWithVat', 'sellingDate'
+        ]
+        return columns.map((column, index) => {
+            return (
+                <Table.Cell key={ index }>
+                    <Input
+                        type={ column === 'sellingDate' ? 'date' : 'text'}
+                        style={{ width: '90px'}}
+                        onChange={ e => { this.setState({ [column]: e.target.value }) }}
+                        value = { this.state[column] }
+                    />
+                </Table.Cell>
+            )
+        })              
     };
+
+    saveData = () => {
+        let newData = this.state;
+        let { userId, ...rest } = newData;
+        firebase.database().ref('users/' + userId).set({
+            cars: rest
+        }, err => {
+            if(err){
+                console.log(err)
+            } else{
+                browserHistory.push({})
+            }
+        });
+    }
 
     render() {
         return (
@@ -150,7 +133,12 @@ class CreateTable extends Component {
                     </Grid.Column>
                     <Grid.Row style={{ width: '100%' }}> 
                     <Grid.Column >
-                            <Button floated='right' color="grey" style={{ marginRight: '10%' }}>
+                            <Button 
+                                floated='right' 
+                                color="grey" 
+                                style={{ marginRight: '10%' }}
+                                onClick={ this.saveData }
+                            >
                                 Save
                             </Button>
                     </Grid.Column>
