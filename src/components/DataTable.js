@@ -10,93 +10,17 @@ export default class DataTable extends Component {
 	state = {
 		userId: 0,
 		cars: [], 
-		currentPage: 0,
-		fieldsPerPage: +localStorage.getItem('fieldsPerPage') || 10,
 		direction: '',
-		filtered: [],
-		deletedItems: []
+		filtered: null,
+		deletedItems: [],
+        searchQuery: ''
 	}
-
-	dropdownOptions = [
-        {
-            text: '5',
-            value: 5
-        },
-        {
-            text: '10',
-            value: 10
-        },
-        {
-            text: '15',
-            value: 15
-        },
-        {
-            text: '20',
-            value: 20
-        },
-        {
-            text: '25',
-            value: 25
-        },
-        {
-            text: '30',
-            value: 30
-        },
-        {
-            text: '40',
-            value: 40
-        },
-        {
-            text: '50',
-            value: 50
-        }
-    ];
 
     componentWillMount() {
         var starCountRef = firebase.database().ref('/users/' + this.state.userId + '/cars');
         starCountRef.on('value', snapshot => {
           this.setState({cars: snapshot.val()})
         });
-    };
-
-    onPaginationNumberChange = (e, { value }) => {
-        localStorage.setItem('fieldsPerPage', value);
-        this.setState(prevState => ({
-            fieldsPerPage: value
-        }));
-    };
-
-    onPaginationPrev = () => {
-        if(this.state.currentPage !== 0) {
-            this.setState(prevState => ({
-                currentPage: prevState.currentPage - 1
-            }))
-        }
-    };
-
-    onPaginationChange = (page) => {
-        this.setState({ currentPage: page });
-    };
-
-    onPaginationNext = () => {
-        if(this.state.currentPage < this.getPageAmount() - 1) {
-            this.setState(prevState => ({
-                currentPage: prevState.currentPage + 1
-            }))
-        }
-    };
-
-    getPageAmount = () => Math.ceil(this.state.cars.length / this.state.fieldsPerPage);
-
-    getPageArray = () => {
-        const pageAmount = this.getPageAmount();
-        const pages = [];
-
-        for(let i = 0; i < pageAmount; i++) {
-            pages.push(i);
-        }
-
-        return pages;
     };
 
     getHeaderRows = () => (
@@ -132,9 +56,9 @@ export default class DataTable extends Component {
             	B
             </Table.HeaderCell>
             <Table.HeaderCell
-            	sorted={this.state.column === 'E' ? this.state.direction : null}
-                onClick={ e => this.handleSort('E')}>
-            	E
+            	sorted={this.state.column === 'vin' ? this.state.direction : null}
+                onClick={ e => this.handleSort('vin')}>
+            	VIN
             </Table.HeaderCell>
             <Table.HeaderCell
             	sorted={this.state.column === '21' ? this.state.direction : null}
@@ -276,25 +200,17 @@ export default class DataTable extends Component {
             	cars: direction === 'ascending' ? sortedItems.reverse() : sortedItems,
             	direction: direction === 'ascending' ? 'descending' : 'ascending',
         	});
-        }
-
-        
-    };
-
-    paginate = array => {
-        const startIndex = this.state.currentPage === 0 ? 0 : this.state.currentPage * this.state.fieldsPerPage;
-        const endIndex = startIndex + this.state.fieldsPerPage;
-
-        return array.slice(startIndex, endIndex);
+        }        
     };
 
     getTableData = projects => {
-        let columns = [ 'id', 'invoice', 'd1', 'd3', '5', 'B', 'E', '21', '22', 
+        let columns = [ 'id', 'invoice', 'd1', 'd3', '5', 'B', 'vin', '21', '22', 
             'kilometer', 'HU', 'number', 'p2', 'p21', 'p1', 'p3', 'euro', 'gear', 'owner', 
             'name', 'street', 'postCode', 'city', 'country', 'amount', 
             'vat', 'amountWithVat', 'sellingDate'
         ]
-        let keys = Object.keys(this.state.cars);
+        let items = this.state.filtered || this.state.cars;
+        let keys = Object.keys(items);
         return keys.map((key, keyIndex) => {
         	return (
         		<Table.Row key={ keyIndex }> {
@@ -309,7 +225,7 @@ export default class DataTable extends Component {
 			                        	cars[key][column] = e.target.value;
 			                        	this.setState({ cars: cars }) 
 			                    	}}
-			                        value = { this.state.cars[key][column] }
+			                        value = { items[key][column] }
 			                    />
 			                </Table.Cell>
             )
@@ -337,11 +253,41 @@ export default class DataTable extends Component {
         });
     }
 
+    handleSearchChange = () => {
+        console.log(query)
+        let query = this.state.searchQuery;
+        let cars = this.state.cars;
+        if(query){
+            let filteredKeys = Object.keys(cars).filter(key => {
+            return cars[key].vin.toLowerCase().includes(query) || cars[key].d3.toLowerCase().includes(query)
+            })
+             let filtered = {};
+            filteredKeys.map(key => {
+                filtered[key] = cars[key]
+            })
+            this.setState({ filtered })
+        }else{
+            this.setState({filtered: null, searchQuery: ''})
+        }
+        
+    }
+
     render(){
     	return (
-            <Grid>                
+            <Grid>
+            <Grid.Row>
+                <Grid.Column style={{ width: '90%'}}>
+                <Input 
+                    placeholder='Search for VIN or Model' 
+                    style={{ marginLeft: '10%', marginTop: '20px'}}
+                    onChange = { e => {
+                         this.setState({searchQuery: e.target.value}, () => this.handleSearchChange())
+                    } }
+                />
+                </Grid.Column>
+            </Grid.Row>            
                 <Grid.Row>
-                    <Grid.Column style={{ width: '90%', overflowX: 'scroll', margin: '100px auto'}}>
+                    <Grid.Column style={{ width: '90%', overflowX: 'scroll', margin: '0px auto'}}>
                         <Table sortable celled
                             color="grey">
                             <Table.Header>

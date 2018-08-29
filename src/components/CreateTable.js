@@ -15,7 +15,7 @@ class CreateTable extends Component {
         d3: '',
         '5': '',
         B: '',
-        E: '',
+        vin: '',
         '21': '',
         '22': '',
         kilometer: '',
@@ -55,7 +55,7 @@ class CreateTable extends Component {
             <Table.HeaderCell>d3</Table.HeaderCell>
             <Table.HeaderCell>5</Table.HeaderCell>
             <Table.HeaderCell>B</Table.HeaderCell>
-            <Table.HeaderCell>E</Table.HeaderCell>
+            <Table.HeaderCell>VIN</Table.HeaderCell>
             <Table.HeaderCell>2.1</Table.HeaderCell>
             <Table.HeaderCell>2.2</Table.HeaderCell>
             <Table.HeaderCell>Kilometer</Table.HeaderCell>
@@ -81,7 +81,7 @@ class CreateTable extends Component {
     );
 
     getTableData = projects => {
-        let columns = [ 'id', 'invoice', 'd1', 'd3', '5', 'B', 'E', '21', '22', 
+        let columns = [ 'id', 'invoice', 'd1', 'd3', '5', 'B', 'vin', '21', '22', 
             'kilometer', 'HU', 'number', 'p2', 'p21', 'p1', 'p3', 'euro', 'gear', 'owner', 
             'name', 'street', 'postCode', 'city', 'country', 'amount', 
             'vat', 'amountWithVat', 'sellingDate'
