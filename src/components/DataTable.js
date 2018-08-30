@@ -36,24 +36,24 @@ export default class DataTable extends Component {
             	Invoice Number
             </Table.HeaderCell>
             <Table.HeaderCell
-            	sorted={this.state.column === 'd1' ? this.state.direction : null}
-                onClick={ e => this.handleSort('d1')}>
-            	d1
+            	sorted={this.state.column === 'brand' ? this.state.direction : null}
+                onClick={ e => this.handleSort('brand')}>
+            	Brand
             </Table.HeaderCell>
             <Table.HeaderCell
-            	sorted={this.state.column === 'd3' ? this.state.direction : null}
-                onClick={ e => this.handleSort('d3')}>
-            	d3
+            	sorted={this.state.column === 'model' ? this.state.direction : null}
+                onClick={ e => this.handleSort('model')}>
+            	Model
             </Table.HeaderCell>
             <Table.HeaderCell
-            	sorted={this.state.column === '5' ? this.state.direction : null}
-                onClick={ e => this.handleSort('5')}>
-            	5
+            	sorted={this.state.column === 'class' ? this.state.direction : null}
+                onClick={ e => this.handleSort('class')}>
+            	Class
             </Table.HeaderCell>
             <Table.HeaderCell
-            	sorted={this.state.column === 'B' ? this.state.direction : null}
-                onClick={ e => this.handleSort('B')}>
-            	B
+            	sorted={this.state.column === 'registrationDate' ? this.state.direction : null}
+                onClick={ e => this.handleSort('registrationDate')}>
+            	Registration Date
             </Table.HeaderCell>
             <Table.HeaderCell
             	sorted={this.state.column === 'vin' ? this.state.direction : null}
@@ -96,14 +96,14 @@ export default class DataTable extends Component {
             	p21
             </Table.HeaderCell>
             <Table.HeaderCell
-            	sorted={this.state.column === 'p1' ? this.state.direction : null}
-                onClick={ e => this.handleSort('p1')}>
-            	p1
+            	sorted={this.state.column === 'capacity' ? this.state.direction : null}
+                onClick={ e => this.handleSort('capacity')}>
+            	Capacity
             </Table.HeaderCell>
             <Table.HeaderCell
-            	sorted={this.state.column === 'p3' ? this.state.direction : null}
-                onClick={ e => this.handleSort('p3')}>
-            	p3
+            	sorted={this.state.column === 'fuel' ? this.state.direction : null}
+                onClick={ e => this.handleSort('fuel')}>
+            	Fuel
             </Table.HeaderCell>
             <Table.HeaderCell
             	sorted={this.state.column === 'euro' ? this.state.direction : null}
@@ -171,6 +171,44 @@ export default class DataTable extends Component {
         </Table.Row>
     );
 
+    getTableData = projects => {
+        let columns = [ 'id', 'invoice', 'brand', 'model', 'class', 'registrationDate', 'vin', '21', '22', 
+            'kilometer', 'HU', 'number', 'p2', 'p21', 'capacity', 'fuel', 'euro', 'gear', 'owner', 
+            'name', 'street', 'postCode', 'city', 'country', 'amount', 
+            'vat', 'amountWithVat', 'sellingDate'
+        ]
+        let items = this.state.filtered || this.state.cars;
+        let keys = Object.keys(items);
+        return keys.map((key, keyIndex) => {
+            return (
+                <Table.Row key={ keyIndex }> {
+                    columns.map((column, columnIndex) => {
+                        return (
+                            <Table.Cell key={ columnIndex }>
+                                <Input
+                                    type={ column.includes('Date') ? 'date' : 'text'}
+                                    style={{ width: column === 'sellingDate' ? '170px' : '90px'}}
+                                    onChange={ e => { 
+                                        let cars = { ...this.state.cars };
+                                        cars[key][column] = e.target.value;
+                                        this.setState({ cars: cars }) 
+                                    }}
+                                    value = { items[key][column] }
+                                />
+                            </Table.Cell>
+            )
+        })
+                } 
+                <Table.Cell>
+                    <Icon 
+                        name='trash'
+                        onClick={ e => { this.handleItemDelete(key) }}
+                    />
+                </Table.Cell>
+                </Table.Row>)     
+        }) 
+    };
+
     handleItemDelete = key => {
     	this.setState({ 
     		deletedItems: [...this.state.deletedItems, this.state.cars[key]],
@@ -203,44 +241,6 @@ export default class DataTable extends Component {
         }        
     };
 
-    getTableData = projects => {
-        let columns = [ 'id', 'invoice', 'd1', 'd3', '5', 'B', 'vin', '21', '22', 
-            'kilometer', 'HU', 'number', 'p2', 'p21', 'p1', 'p3', 'euro', 'gear', 'owner', 
-            'name', 'street', 'postCode', 'city', 'country', 'amount', 
-            'vat', 'amountWithVat', 'sellingDate'
-        ]
-        let items = this.state.filtered || this.state.cars;
-        let keys = Object.keys(items);
-        return keys.map((key, keyIndex) => {
-        	return (
-        		<Table.Row key={ keyIndex }> {
-        			columns.map((column, columnIndex) => {
-            			return (
-                			<Table.Cell key={ columnIndex }>
-			                    <Input
-			                        type={ column === 'sellingDate' ? 'date' : 'text'}
-			                        style={{ width: column === 'sellingDate' ? '170px' : '90px'}}
-			                        onChange={ e => { 
-			                        	let cars = { ...this.state.cars };
-			                        	cars[key][column] = e.target.value;
-			                        	this.setState({ cars: cars }) 
-			                    	}}
-			                        value = { items[key][column] }
-			                    />
-			                </Table.Cell>
-            )
-        })
-        		} 
-        		<Table.Cell>
-        			<Icon 
-        				name='trash'
-        				onClick={ e => { this.handleItemDelete(key) }}
-        			/>
-        		</Table.Cell>
-        		</Table.Row>)	  
-        }) 
-    };
-
     saveData = () => {
         firebase.database().ref('users/' + this.state.userId).set({
             cars: this.state.cars
@@ -254,12 +254,11 @@ export default class DataTable extends Component {
     }
 
     handleSearchChange = () => {
-        console.log(query)
         let query = this.state.searchQuery;
         let cars = this.state.cars;
         if(query){
             let filteredKeys = Object.keys(cars).filter(key => {
-            return cars[key].vin.toLowerCase().includes(query) || cars[key].d3.toLowerCase().includes(query)
+            return cars[key].vin.toLowerCase().includes(query) || cars[key].model.toLowerCase().includes(query)
             })
              let filtered = {};
             filteredKeys.map(key => {

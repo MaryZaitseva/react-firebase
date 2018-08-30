@@ -11,10 +11,10 @@ class CreateTable extends Component {
         userId: 0,
         id: '',
         invoice: '',
-        d1: '',
-        d3: '',
-        '5': '',
-        B: '',
+        brand: '',
+        model: '',
+        class: '',
+        registrationDate: '',
         vin: '',
         '21': '',
         '22': '',
@@ -23,8 +23,8 @@ class CreateTable extends Component {
         number: '',
         p2: '',
         p21: '',
-        p1: '',
-        p3: '',
+        capacity: '',
+        fuel: '',
         euro: '',
         gear: '',
         owner: '',
@@ -51,10 +51,10 @@ class CreateTable extends Component {
         <Table.Row>
             <Table.HeaderCell>ID</Table.HeaderCell>
             <Table.HeaderCell>Invoice Number</Table.HeaderCell>
-            <Table.HeaderCell>d1</Table.HeaderCell>
-            <Table.HeaderCell>d3</Table.HeaderCell>
-            <Table.HeaderCell>5</Table.HeaderCell>
-            <Table.HeaderCell>B</Table.HeaderCell>
+            <Table.HeaderCell>Brand</Table.HeaderCell>
+            <Table.HeaderCell>Model</Table.HeaderCell>
+            <Table.HeaderCell>Class</Table.HeaderCell>
+            <Table.HeaderCell>Registration Date</Table.HeaderCell>
             <Table.HeaderCell>VIN</Table.HeaderCell>
             <Table.HeaderCell>2.1</Table.HeaderCell>
             <Table.HeaderCell>2.2</Table.HeaderCell>
@@ -63,8 +63,8 @@ class CreateTable extends Component {
             <Table.HeaderCell>Number</Table.HeaderCell>
             <Table.HeaderCell>p2</Table.HeaderCell>
             <Table.HeaderCell>p21</Table.HeaderCell>
-            <Table.HeaderCell>p1</Table.HeaderCell>
-            <Table.HeaderCell>p3</Table.HeaderCell>
+            <Table.HeaderCell>Capacity</Table.HeaderCell>
+            <Table.HeaderCell>Fuel</Table.HeaderCell>
             <Table.HeaderCell>Euro</Table.HeaderCell>
             <Table.HeaderCell>Gear</Table.HeaderCell>
             <Table.HeaderCell>Owner</Table.HeaderCell>
@@ -81,8 +81,8 @@ class CreateTable extends Component {
     );
 
     getTableData = projects => {
-        let columns = [ 'id', 'invoice', 'd1', 'd3', '5', 'B', 'vin', '21', '22', 
-            'kilometer', 'HU', 'number', 'p2', 'p21', 'p1', 'p3', 'euro', 'gear', 'owner', 
+        let columns = [ 'id', 'invoice', 'brand', 'model', 'class', 'registrationDate', 'vin', '21', '22', 
+            'kilometer', 'HU', 'number', 'p2', 'p21', 'capacity', 'fuel', 'euro', 'gear', 'owner', 
             'name', 'street', 'postCode', 'city', 'country', 'amount', 
             'vat', 'amountWithVat', 'sellingDate'
         ]
@@ -90,7 +90,7 @@ class CreateTable extends Component {
             return (
                 <Table.Cell key={ index }>
                     <Input
-                        type={ column === 'sellingDate' ? 'date' : 'text'}
+                        type={ column.includes('Date') ? 'date' : 'text'}
                         style={{ width: '90px'}}
                         onChange={ e => { this.setState({ [column]: e.target.value }) }}
                         value = { this.state[column] }
