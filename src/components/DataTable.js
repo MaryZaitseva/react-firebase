@@ -187,7 +187,7 @@ export default class DataTable extends Component {
                             <Table.Cell key={ columnIndex }>
                                 <Input
                                     type={ column.includes('Date') ? 'date' : 'text'}
-                                    style={{ width: column === 'sellingDate' ? '170px' : '90px'}}
+                                    style={{ width: column.includes('Date') ? '170px' : '90px'}}
                                     onChange={ e => { 
                                         let cars = { ...this.state.cars };
                                         cars[key][column] = e.target.value;
@@ -258,7 +258,7 @@ export default class DataTable extends Component {
         let cars = this.state.cars;
         if(query){
             let filteredKeys = Object.keys(cars).filter(key => {
-            return cars[key].vin.toLowerCase().includes(query) || cars[key].model.toLowerCase().includes(query)
+            return (cars[key].vin && cars[key].vin.toLowerCase().includes(query)) || (cars[key].model && cars[key].model.toLowerCase().includes(query))
             })
              let filtered = {};
             filteredKeys.map(key => {

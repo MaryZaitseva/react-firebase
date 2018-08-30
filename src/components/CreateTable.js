@@ -91,7 +91,7 @@ class CreateTable extends Component {
                 <Table.Cell key={ index }>
                     <Input
                         type={ column.includes('Date') ? 'date' : 'text'}
-                        style={{ width: '90px'}}
+                        style={{ width: column.includes('Date') ? '170px' : '90px'}}
                         onChange={ e => { this.setState({ [column]: e.target.value }) }}
                         value = { this.state[column] }
                     />
